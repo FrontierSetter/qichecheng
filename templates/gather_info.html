@@ -42,6 +42,7 @@
 
     <!-- 百度地图封装api -->
     <script src="static/common.js"></script>
+    <script src="static/function.js"></script>
 
     <link rel="stylesheet" type="text/css" href="static/component.css">
 
@@ -110,7 +111,7 @@
             
             <!-- <div class="ui input" style="margin-left: 5%;  float: left;"><input type="text" placeholder="车牌号"></div> -->
 
-            <button class="ui blue button" style="margin-left: 5%;float: left;" onclick="requestTest()">
+            <button class="ui blue button" style="margin-left: 5%;float: left;" onclick="setTimeSpan()">
                 查询
             </button>
             </div>
@@ -271,12 +272,65 @@
                 end: 100         // 右边在 60% 的位置。
             }
         ],
+        // xAxis: {
+        //     type: 'time',
+        //     axisLabel: {
+        //         formatter: function(value, index) {
+        //             return new Date(value).getFullYear();
+        //         }
+        //     },
+        // },
         xAxis: {
             type: 'category',
             data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+                formatter: function (value) {
+                    var res = value.toString();                                            
+                    var numN1 = 0; 
+                    var numN2 = 1;
+                    var num1=0;
+                    var num2=0;
+                    var t1 = 1;
+                    for(var k=0;k<res.length;k++){
+                        if(res[k]==".")
+                            t1 = 0;
+                        if(t1)
+                            num1++;
+                        else
+                            num2++;                                                                                              
+                    }
+                                                                    
+                    if(Math.abs(value)<1 && res.length>4)
+                    {
+                        for(var i=2; i<res.length; i++){                                              
+                            if(res[i]=="0"){
+                                numN2++;
+                            }else if(res[i]==".")
+                                continue;
+                            else
+                                break;
+                        }
+                        var v = parseFloat(value);                                                
+                        v = v * Math.pow(10,numN2);
+                        return v.toString() + "e-" + numN2;
+                    }else if(num1>4)
+                    {
+                        if(res[0]=="-")
+                            numN1 = num1 - 2;
+                        else
+                            numN1 = num1 - 1;
+                        var v = parseFloat(value);                                                
+                        v = v / Math.pow(10,numN1);
+                        if(num2 > 4)
+                            v = v.toFixed(4);
+                        return v.toString() + "e" + numN1;
+                    }else
+                        return parseFloat(value);                                                                                  
+                }
+            }
         },
         series: [
             {
@@ -296,19 +350,30 @@
     var myChart1_2 = echarts.init(document.getElementById('pic_1_2'));
     var option1_2 = {
         tooltip: {},
-        dataset: {
-            source: [
-                ['模式', '自动驾驶', '汇总'],
-                ['里程', 800, 8583],
-            ]
+        // dataset: {
+        //     source: [
+        //         ['模式', '自动驾驶', '汇总'],
+        //         ['里程', 800, 8583],
+        //     ]
+        // },
+        xAxis: {
+            type: 'category',
+            data: ['里程'],
         },
-        xAxis: {type: 'category'},
         yAxis: {show: false},
         // Declare several bar series, each will be mapped
         // to a column of dataset.source by default.
         series: [
-            {type: 'bar'},
-            {type: 'bar'},
+            {
+                name: '自动驾驶',
+                type: 'bar',
+                data: [800]
+            },
+            {
+                name: '汇总',
+                type: 'bar',
+                data: [8583]
+            }
         ]
     };
     myChart1_2.setOption(option1_2);
@@ -335,7 +400,52 @@
             data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+                formatter: function (value) {
+                    var res = value.toString();                                            
+                    var numN1 = 0; 
+                    var numN2 = 1;
+                    var num1=0;
+                    var num2=0;
+                    var t1 = 1;
+                    for(var k=0;k<res.length;k++){
+                        if(res[k]==".")
+                            t1 = 0;
+                        if(t1)
+                            num1++;
+                        else
+                            num2++;                                                                                              
+                    }
+                                                                    
+                    if(Math.abs(value)<1 && res.length>4)
+                    {
+                        for(var i=2; i<res.length; i++){                                              
+                            if(res[i]=="0"){
+                                numN2++;
+                            }else if(res[i]==".")
+                                continue;
+                            else
+                                break;
+                        }
+                        var v = parseFloat(value);                                                
+                        v = v * Math.pow(10,numN2);
+                        return v.toString() + "e-" + numN2;
+                    }else if(num1>4)
+                    {
+                        if(res[0]=="-")
+                            numN1 = num1 - 2;
+                        else
+                            numN1 = num1 - 1;
+                        var v = parseFloat(value);                                                
+                        v = v / Math.pow(10,numN1);
+                        if(num2 > 4)
+                            v = v.toFixed(4);
+                        return v.toString() + "e" + numN1;
+                    }else
+                        return parseFloat(value);                                                                                  
+                }
+            }
         },
         series: [
             {
@@ -355,19 +465,30 @@
     var myChart1_4 = echarts.init(document.getElementById('pic_1_4'));
     var option1_4 = {
         tooltip: {},
-        dataset: {
-            source: [
-                ['模式', '自动驾驶', '汇总'],
-                ['累计时长', 1420, 5523],
-            ]
+        // dataset: {
+        //     source: [
+        //         ['模式', '自动驾驶', '汇总'],
+        //         ['累计时长', 1420, 5523],
+        //     ]
+        // },
+        xAxis: {
+            type: 'category',
+            data: ['时长'],
         },
-        xAxis: {type: 'category'},
         yAxis: {show: false},
         // Declare several bar series, each will be mapped
         // to a column of dataset.source by default.
         series: [
-            {type: 'bar'},
-            {type: 'bar'},
+            {
+                name: '自动驾驶',
+                type: 'bar',
+                data: [800]
+            },
+            {
+                name: '汇总',
+                type: 'bar',
+                data: [8583]
+            }
         ]
     };
     myChart1_4.setOption(option1_4);
@@ -429,23 +550,58 @@
             data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+                formatter: function (value) {
+                    var res = value.toString();                                            
+                    var numN1 = 0; 
+                    var numN2 = 1;
+                    var num1=0;
+                    var num2=0;
+                    var t1 = 1;
+                    for(var k=0;k<res.length;k++){
+                        if(res[k]==".")
+                            t1 = 0;
+                        if(t1)
+                            num1++;
+                        else
+                            num2++;                                                                                              
+                    }
+                                                                    
+                    if(Math.abs(value)<1 && res.length>4)
+                    {
+                        for(var i=2; i<res.length; i++){                                              
+                            if(res[i]=="0"){
+                                numN2++;
+                            }else if(res[i]==".")
+                                continue;
+                            else
+                                break;
+                        }
+                        var v = parseFloat(value);                                                
+                        v = v * Math.pow(10,numN2);
+                        return v.toString() + "e-" + numN2;
+                    }else if(num1>4)
+                    {
+                        if(res[0]=="-")
+                            numN1 = num1 - 2;
+                        else
+                            numN1 = num1 - 1;
+                        var v = parseFloat(value);                                                
+                        v = v / Math.pow(10,numN1);
+                        if(num2 > 4)
+                            v = v.toFixed(4);
+                        return v.toString() + "e" + numN1;
+                    }else
+                        return parseFloat(value);                                                                                  
+                }
+            }
         },
         series: [
             {
-                name: '车速最大值',
+                name: '脱离次数',
                 type: 'line',
                 data: [142, 161, 220, 167, 120, 172, 210]
-            },
-            {
-                name: '车速平均值',
-                data: [92, 91, 80,  94, 77, 130, 75],
-                type: 'line'
-            },
-            {
-                name: '车速最小值',
-                data: [32, 1, 20, 34, 37, 30, 55],
-                type: 'line'
             }
         ]
     };
@@ -970,21 +1126,113 @@
 
 
 <script type="text/javascript">
-    function requestTest(){
-        singleCarTraceInitFinish = false;
+    var startTimeValue;
+    var endTimeValue;
+    var startTimeYear, startTimeMonth, startTimeDay;
+    var endTimeYear, endTimeMonth, endTimeDay;
+    var spanType;
+
+    function setTimeSpan(){
+        spanType = document.getElementById('start_time').type;
+        startTimeValue = document.getElementById('start_time').value;
+        endTimeValue = document.getElementById('end_time').value;
+
+        startTimeYear = startTimeValue.split('-')[0];
+        endTimeYear = endTimeValue.split('-')[0];
+
+        if(spanType == 'month'){
+            startTimeMonth = startTimeValue.split('-')[1];
+            endTimeMonth = endTimeValue.split('-')[1];
+        }
+
+        if(spanType == 'day'){
+            startTimeMonth = startTimeValue.split('-')[1];
+            endTimeMonth = endTimeValue.split('-')[1];
+            startTimeDay = startTimeValue.split('-')[2];
+            endTimeDay = endTimeValue.split('-')[2];
+        }
+
+
+        // console.log(startTimeValue);
+        // console.log(endTimeValue);
+        requestHistoryAll();
+    }
+    
+
+    function requestHistoryAll(){
         $.ajax({
-            url: 'http://27.115.34.163:3005/json/car_list', //请求的url
+            // url: 'http://27.115.34.163:3005/json/car_list', //请求的url
+            url: 'http://127.0.0.1:5600/json/statistic_history', //请求的url
             type: 'get', //请求的方式
             error: function (data) {
                 console.log('requestSingleCarTrace请求失败');
             },
             success: function (data) {
-                console.log('请求到的历史轨迹长度: '+data.length);
-                console.log(data)
-                
+                // console.log(data);
+
+                data = data['resultData'];
+
+                var timeArr = [];
+                var mileageArr = [];
+                var durationArr = [];
+                var autoMileageArr = [];
+                var autoDurationArr = [];
+                var drivemodeSwitchTimesArr = [];
+
+                for(var i = 0; i < data.length; ++i){
+                    // TODO: 这里要适配时间粒度
+                    if(data[i]['timeMon'] < startTimeValue){
+                        console.log(data[i]['time']);
+                        continue;
+                    }else{
+                        // TODO: 这里要适配时间粒度
+                        timeArr.push(data[i]['timeMon']);
+                        mileageArr.push(data[i]['mileage']);
+                        durationArr.push(data[i]['duration']);
+                        autoMileageArr.push(data[i]['autoMileage']);
+                        autoDurationArr.push(data[i]['autoDuration']);
+                        drivemodeSwitchTimesArr.push(data[i]['drivemodeSwitchTimes']);
+                    }
+                }
+
+                // console.log(timeArr);
+
+                var option1_1 = myChart1_1.getOption();
+                option1_1.series[0].data = autoMileageArr;
+                option1_1.series[1].data = mileageArr;
+                option1_1.xAxis[0].data = timeArr;
+                // option1_1.xAxis[0].type = 'time';
+                myChart1_1.setOption(option1_1);
+
+                var option1_3 = myChart1_3.getOption();
+                option1_3.series[0].data = autoDurationArr;
+                option1_3.series[1].data = durationArr;
+                option1_3.xAxis[0].data = timeArr;
+                // option1_1.xAxis[0].type = 'time';
+                myChart1_3.setOption(option1_3);
+
+                var totalMileage, totalAutoMileage;
+                var totalDuration, totalAutoDuration;
+
+                var option1_2 = myChart1_2.getOption();
+                option1_2.series[0].data = [sum(autoMileageArr)];
+                option1_2.series[1].data = [sum(mileageArr)];
+                myChart1_2.setOption(option1_2);
+
+                var option1_4 = myChart1_4.getOption();
+                option1_4.series[0].data = [sum(autoDurationArr)];
+                option1_4.series[1].data = [sum(durationArr)];
+                myChart1_4.setOption(option1_4);
+
+                var option1_6 = myChart1_6.getOption();
+                option1_6.series[0].data = drivemodeSwitchTimesArr;
+                option1_6.xAxis[0].data = timeArr;
+                myChart1_6.setOption(option1_6);
+
             }
             
         });
 
     }
+    
 </script>
