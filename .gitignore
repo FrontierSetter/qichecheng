@@ -3,3 +3,4 @@ legacy
 log
 bash
 *.tar
+venv/
