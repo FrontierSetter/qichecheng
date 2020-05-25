@@ -111,6 +111,6 @@ def render_html(html_name):
 
 @app.route('/json/car_list')
 def car_list_get():
-    response = requests.urlopen('http://10.55.8.52:8860/api/v1/vehicle/list')
+    response = requests.get('http://10.55.8.52:8860/api/v1/vehicle/list')
     print(response.json())
     return jsonify(response.json())
