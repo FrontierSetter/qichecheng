@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+        div#map_container    {width: 100%;height: 100%; background: rgb(6, 211, 50); overflow: hidden;margin:0;font-family:"微软雅黑"; float: left;}
+        /* div#posDetail {width: 20%; height:35%; background: rgb(211, 21, 21);float: left;}
+        div#posNotice {width: 20%; height:65%; background: rgb(15, 12, 201);float: left;} */
+	</style>
+    <!-- <script type="text/javascript" src="//api.map.baidu.com/api?v=3.0&ak=L2BqxrumWCQogRgq2SyQO3RUpEOk0ZgK"></script> -->
+    <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=L2BqxrumWCQogRgq2SyQO3RUpEOk0ZgK"></script>
+    <script src="static/my_common.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <!-- <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.46/dist/mapvgl.min.js"></script> -->
+    <title>汽车城项目demo-v0.1</title>
+</head>
+<body style="height: 96%">
+    <div id="map_container"></div>
+    
+    <!-- 创建地图 -->
+    <script type="text/javascript">
+        // 1. 创建地图实例
+        // var bmapgl = new BMapGL.Map('map_container');
+        // var point = new BMapGL.Point(121.447176,31.033731);
+        // bmapgl.centerAndZoom(point, 17);
+        // bmapgl.enableScrollWheelZoom(true);
+
+        var map = initMap({
+            tilt: 40,
+            heading: 0.3,
+            center: [121.447176,31.033731],
+            zoom: 17,
+            // style: whiteStyle,
+            // skyColors: [
+            //     // 地面颜色
+            //     'rgba(226, 237, 248, 0)',
+            //     // 天空颜色
+            //     'rgba(186, 211, 252, 1)'
+            // ]
+        });
+
+        // 2. 创建MapVGL图层管理器
+        var view = new mapvgl.View({
+            map: map,
+        });
+
+        // 3. 创建可视化图层，并添加到图层管理器中
+        var layer = new mapvgl.PointLayer({
+            color: 'rgba(50, 50, 200, 0.8)',
+            blend: 'lighter',
+            size: 20,
+            data: data,
+        });
+        view.addLayer(layer);
+
+        // 4. 准备好规范化坐标数据
+        var data = [{
+            geometry: {
+                type: 'POINT',
+                coordinates: [121.447176,31.033731]
+            }
+        }];
+
+        // 5. 关联图层与数据，享受震撼的可视化效果
+        layer.setData(data);
+    </script>
+
+</body>
+</html>
+
+

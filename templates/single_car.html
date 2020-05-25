@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <!-- 百度地图GL -->
+    <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=L2BqxrumWCQogRgq2SyQO3RUpEOk0ZgK"></script>
+    <script src="static/my_common.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <script src="//mapv.baidu.com/build/mapv.min.js"></script>
+    <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.46/dist/mapvgl.min.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- semantic UI -->
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/sidebar.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/sidebar.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/statistic.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/divider.css" rel="stylesheet">
+
+    <!-- 百度地图封装api -->
+    <script src="static/my_common.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="static/component.css">
+
+
+
+    <title>汽车城项目demo-v0.1</title>
+
+    <style type="text/css">
+        div#map_container    {width: 75%;height: 100%; background: rgb(6, 211, 50); overflow: hidden;margin:0;font-family:"微软雅黑"; float: left;}
+        div#info_container    {width: 25%;height: 100%; background: rgb(222, 221, 226); overflow: hidden;margin:0;font-family:"微软雅黑"; float: left;}
+        /* div#posDetail {width: 20%; height:35%; background: rgb(211, 21, 21);float: left;}
+        div#posNotice {width: 20%; height:65%; background: rgb(15, 12, 201);float: left;} */
+	</style>
+</head>
+
+<body>
+    <div id="mySidebar" class="ui right inverted vertical menu sidebar">
+        <script src="static/sidebar.js"></script>
+    </div>
+    <div class="pusher" style="height: 100%; margin: 0" >
+        <!-- <iframe src="charts.html" style="height: 70%; width: 100%;"></iframe> -->
+        <div id="frame_container" style="width: 100%;">
+            <iframe src="charts.html" style="height: 500px; width: 100%;"></iframe>    
+        </div>
+
+        <button class="ui fluid inverted green button" onclick="(function(){
+            var div = document.getElementById('frame_container'); 
+            var input = document.createElement('iframe');  
+            input.setAttribute('src', 'charts.html');  
+            input.setAttribute('style', 'height: 500px; width: 100%;');  
+            div.appendChild(input);
+        })()">新增条目</button>
+        
+    </div>
+    <i id="back-to-top" style="display: inline; z-index: 999;" href="javascript:void(0);" onclick="$('.ui.sidebar').sidebar('toggle');"></i>
+</body>
+</html>

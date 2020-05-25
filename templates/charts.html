@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+
+
+    <!-- 百度地图GL -->
+    <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=L2BqxrumWCQogRgq2SyQO3RUpEOk0ZgK"></script>
+    <script src="static/my_common.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <script src="//mapv.baidu.com/build/mapv.min.js"></script>
+    <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.46/dist/mapvgl.min.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- semantic UI -->
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/sidebar.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/sidebar.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/statistic.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/divider.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/dropdown.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/dropdown.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/input.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/accordion.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/accordion.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/button.css" rel="stylesheet">
+
+    <!-- echarts -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+
+    <!-- 百度地图封装api -->
+    <script src="static/common.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="static/component.css">
+
+
+
+    <title>汽车城项目demo-v0.1</title>
+
+    <style type="text/css">
+	</style>
+</head>
+
+<body>
+    <!-- <div id="mySidebar" class="ui right inverted vertical menu sidebar">
+        <a class="item" href="realtime_map.html" >
+            页面1
+        </a>
+        <a class="item" href="history_trace.html" >
+            页面2
+        </a>
+        <a class="item" href="javascript:void(0);" >
+            页面3
+        </a>
+    </div>
+    <div class="pusher" style="height: 100%; margin: 0" > -->
+        <div class="my_chart_container" style="width: 100%;height: 100%; background: rgb(213, 221, 215);">
+            <div style="height: 8%;width: 100%; float: left;">
+            <div class="ui floating labeled icon dropdown button" style="float: left;">
+                <i class="filter icon"></i>
+                <span class="text">天</span>
+                <div class="menu">
+                    <div class="header"><i class="tags icon"></i>时间单位</div>
+                    <div class="item" onclick= "(function(){
+                        document.getElementById('start_time').type='datetime-local';
+                        document.getElementById('end_time').type='datetime-local';
+                    })()">分钟</div>
+                    <div class="item active selected" onclick= "(function(){
+                        document.getElementById('start_time').type='date';
+                        document.getElementById('end_time').type='date';
+                    })()">天</div>
+                    <div class="item" onclick= "(function(){
+                        document.getElementById('start_time').type='week';
+                        document.getElementById('end_time').type='week';
+                    })()" >周</div>
+                    <div class="item" onclick= "(function(){
+                        document.getElementById('start_time').type='month';
+                        document.getElementById('end_time').type='month';
+                    })()" >月</div>
+                </div>
+            </div>
+
+
+
+            <!-- 时间选择 -->
+            <div class="ui input" style="margin-left: 5%; float: left;"><input id="start_time" type="date" value="2014-01-13"/></div>
+
+            <div class="ui input" style="margin-left: 5%; float: left;"><input id="end_time" type="date" value="2014-01-13"/></div>
+            
+            <div class="ui input" style="margin-left: 5%;  float: left;"><input type="text" placeholder="车牌号"></div>
+
+            <button class="ui blue button" style="margin-left: 5%;float: left;">
+                查询
+            </button>
+            </div>
+
+            <div style="height: 45%;width: 100%; float: left; margin-top: 1%;">
+            <div id="pic_1_1" style="height: 95%; width: 42%; float: left; "></div>
+            <div id="pic_1_2" style="height: 95%; width: 7%; float: left; "></div>
+            <div id="pic_1_3" style="height: 95%; width: 42%; float: left;"></div>
+            <div id="pic_1_4" style="height: 95%; width: 7%; float: left;"></div>
+            <div id="pic_1_5" style="height: 95%; width: 49%; float: left;"></div>
+            <div id="pic_1_6" style="height: 95%; width: 49%; float: left;"></div>
+
+
+            </div>
+        </div>
+    <!-- </div> -->
+    <!-- <i id="back-to-top" style="display: inline; z-index: 999;" href="javascript:void(0);" onclick="$('.ui.sidebar').sidebar('toggle');"></i> -->
+</body>
+</html>
+
+
+<!-- 绘制图表 -->
+<script type="text/javascript">
+    var myChart1_1 = echarts.init(document.getElementById('pic_1_1'));
+    var option1_1 = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        dataZoom: [
+            {   // 这个dataZoom组件，默认控制x轴。
+                type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            },
+            {   // 这个dataZoom组件，也控制x轴。
+                type: 'inside', // 这个 dataZoom 组件是 inside 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            }
+        ],
+        xAxis: {
+            type: 'category',
+            data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '自动驾驶里程',
+                type: 'line',
+                data: [120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '测试里程',
+                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                type: 'line'
+            }
+        ]
+    };
+    myChart1_1.setOption(option1_1);
+
+    var myChart1_2 = echarts.init(document.getElementById('pic_1_2'));
+    var option1_2 = {
+        tooltip: {},
+        dataset: {
+            source: [
+                ['模式', '自动驾驶', '汇总'],
+                ['里程', 800, 8583],
+            ]
+        },
+        xAxis: {type: 'category'},
+        yAxis: {show: false},
+        // Declare several bar series, each will be mapped
+        // to a column of dataset.source by default.
+        series: [
+            {type: 'bar'},
+            {type: 'bar'},
+        ]
+    };
+    myChart1_2.setOption(option1_2);
+
+    var myChart1_3 = echarts.init(document.getElementById('pic_1_3'));
+    var option1_3 = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        dataZoom: [
+            {   // 这个dataZoom组件，默认控制x轴。
+                type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            },
+            {   // 这个dataZoom组件，也控制x轴。
+                type: 'inside', // 这个 dataZoom 组件是 inside 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            }
+        ],
+        xAxis: {
+            type: 'category',
+            data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '自动驾驶时长',
+                type: 'line',
+                data: [132, 101, 120, 167, 190, 232, 210]
+            },
+            {
+                name: '测试时长',
+                data: [932, 901, 820,  934, 767, 1330, 4355],
+                type: 'line'
+            }
+        ]
+    };
+    myChart1_3.setOption(option1_3);
+
+    var myChart1_4 = echarts.init(document.getElementById('pic_1_4'));
+    var option1_4 = {
+        tooltip: {},
+        dataset: {
+            source: [
+                ['模式', '自动驾驶', '汇总'],
+                ['累计时长', 1420, 5523],
+            ]
+        },
+        xAxis: {type: 'category'},
+        yAxis: {show: false},
+        // Declare several bar series, each will be mapped
+        // to a column of dataset.source by default.
+        series: [
+            {type: 'bar'},
+            {type: 'bar'},
+        ]
+    };
+    myChart1_4.setOption(option1_4);
+
+    var myChart1_5 = echarts.init(document.getElementById('pic_1_5'));
+    var option1_5 = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        dataZoom: [
+            {   // 这个dataZoom组件，默认控制x轴。
+                type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            },
+            {   // 这个dataZoom组件，也控制x轴。
+                type: 'inside', // 这个 dataZoom 组件是 inside 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            }
+        ],
+        xAxis: {
+            type: 'category',
+            data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '告警次数',
+                type: 'line',
+                data: [32, 10, 10, 17, 10, 23, 21]
+            },
+        ]
+    };
+    myChart1_5.setOption(option1_5);
+
+
+    var myChart1_6 = echarts.init(document.getElementById('pic_1_6'));
+    var option1_6 = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        dataZoom: [
+            {   // 这个dataZoom组件，默认控制x轴。
+                type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            },
+            {   // 这个dataZoom组件，也控制x轴。
+                type: 'inside', // 这个 dataZoom 组件是 inside 型 dataZoom 组件
+                start: 0,      // 左边在 10% 的位置。
+                end: 100         // 右边在 60% 的位置。
+            }
+        ],
+        xAxis: {
+            type: 'category',
+            data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '车速最大值',
+                type: 'line',
+                data: [142, 161, 220, 167, 120, 172, 210]
+            },
+            {
+                name: '车速平均值',
+                data: [92, 91, 80,  94, 77, 130, 75],
+                type: 'line'
+            },
+            {
+                name: '车速最小值',
+                data: [32, 1, 20, 34, 37, 30, 55],
+                type: 'line'
+            }
+        ]
+    };
+    myChart1_6.setOption(option1_6);
+
+</script>
+
+<script>
+    $('.ui.dropdown')
+        .dropdown()
+    ;
+
+    $('.ui.accordion')
+        .accordion()
+    ;
+
+</script>

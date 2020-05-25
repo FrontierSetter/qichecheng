@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <!-- 百度地图GL -->
+    <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=L2BqxrumWCQogRgq2SyQO3RUpEOk0ZgK"></script>
+    <script src="static/my_common.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.threelayers.min.js"></script>
+    <script src="//mapv.baidu.com/build/mapv.min.js"></script>
+    <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.46/dist/mapvgl.min.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- semantic UI -->
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/sidebar.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/sidebar.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/statistic.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/divider.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/dropdown.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/dropdown.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/input.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/accordion.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/accordion.js"></script>
+    <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/button.css" rel="stylesheet">
+
+    <!-- 百度地图封装api -->
+    <script src="static/common.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="static/component.css">
+
+
+
+    <title>汽车城项目demo-v0.1</title>
+
+    <style type="text/css">
+        div#map_container    {width: 75%;height: 100%; background: rgb(6, 211, 50); overflow: hidden;margin:0;font-family:"微软雅黑"; float: left;}
+        div#info_container    {width: 25%;height: 100%; background: rgb(222, 221, 226); overflow: hidden;margin:0;font-family:"微软雅黑"; float: left;}
+        /* div#posDetail {width: 20%; height:35%; background: rgb(211, 21, 21);float: left;}
+        div#posNotice {width: 20%; height:65%; background: rgb(15, 12, 201);float: left;} */
+	</style>
+</head>
+
+<body>
+    <div id="mySidebar" class="ui right inverted vertical menu sidebar">
+        <script src="static/sidebar.js"></script>
+    </div>
+    <div class="pusher" style="height: 100%; margin: 0" >
+        <div id="map_container"></div>
+        <div id="info_container">
+            <!-- 时间粒度选择 -->
+            <div class="ui floating labeled icon dropdown button">
+                <i class="filter icon"></i>
+                <span class="text">天</span>
+                <div class="menu">
+                    <div class="header"><i class="tags icon"></i>时间单位</div>
+                    <div class="item" onclick= "(function(){
+                        document.getElementById('start_time').type='datetime-local';
+                        document.getElementById('end_time').type='datetime-local';
+                    })()">分钟</div>
+                    <div class="item active selected" onclick= "(function(){
+                        document.getElementById('start_time').type='date';
+                        document.getElementById('end_time').type='date';
+                    })()">天</div>
+                    <div class="item" onclick= "(function(){
+                        document.getElementById('start_time').type='week';
+                        document.getElementById('end_time').type='week';
+                    })()" >周</div>
+                    <div class="item" onclick= "(function(){
+                        document.getElementById('start_time').type='month';
+                        document.getElementById('end_time').type='month';
+                    })()" >月</div>
+                </div>
+            </div>
+
+            <button class="ui blue button" style="float: right;">
+                过滤
+            </button>
+
+            <!-- 时间选择 -->
+            <p>开始日期：</p>
+            <div class="ui input" style="margin-left: 3%; margin-bottom: 3%;"><input id="start_time" type="date" value="2014-01-13"/></div>
+            <br />
+            <p>结束日期：</p>
+            <div class="ui input" style="margin-left: 3%; margin-bottom: 3%;"><input id="end_time" type="date" value="2014-01-13"/></div>
+
+            <div class="ui divider"></div>
+
+            <!-- 过滤器 -->
+            <div class="ui styled accordion">
+                <div class="title">
+                  <i class="dropdown icon"></i>
+                  按公司筛选
+                </div>
+                <div class="content">
+                    <div class="ui form">
+                        <div class="grouped fields">
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="small">
+                                <label>公司1</label>
+                            </div>
+                            </div>
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="medium">
+                                <label>公司2</label>
+                            </div>
+                            </div>
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="large">
+                                <label>公司3</label>
+                            </div>
+                            </div>
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="x-large">
+                                <label>公司4</label>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="title">
+                  <i class="dropdown icon"></i>
+                  按车型筛选
+                </div>
+                <div class="content">
+                    <div class="ui form">
+                        <div class="grouped fields">
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="small">
+                                <label>车型1</label>
+                            </div>
+                            </div>
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="medium">
+                                <label>车型2</label>
+                            </div>
+                            </div>
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="large">
+                                <label>车型3</label>
+                            </div>
+                            </div>
+                            <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="x-large">
+                                <label>车型4</label>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="title">
+                  <i class="dropdown icon"></i>
+                  自选字段
+                </div>
+                <div class="content">
+                </div>
+            </div>
+        </div>
+    </div>
+    <i id="back-to-top" style="display: inline; z-index: 999;" href="javascript:void(0);" onclick="$('.ui.sidebar').sidebar('toggle');"></i>
+</body>
+</html>
+
+
+<!-- 绘制地图 -->
+<script>
+    /* global BMapGL */
+    /* global Stats */
+    /* global mapv */
+    /* global mapvgl */
+    /* global initMap */
+    var map = initMap();
+
+    map.setTilt(60);
+    // beijing
+    var point = new BMapGL.Point(106.560734,29.566986);
+    map.centerAndZoom(point, 13);
+
+    var view = new mapvgl.View({
+        map: map
+    });
+
+    view.startAnimation();
+
+    fetch('./static/car.csv').then(function (rs) {
+        return rs.text();
+    }).then(function (csvstr) {
+        // csvstr = (csvstr.split('\n').slice(0, 1).concat(csvstr.split('\n').slice(1, 10))).join('\n');
+        var dataSet = mapv.csv.getDataSet(csvstr);
+        var data = dataSet.get();
+
+        var linePointLayer = new mapvgl.LinePointLayer({
+            size: 5,
+            speed: 1,
+            color: 'rgba(255, 255, 0, 0.6)',
+            animationType: mapvgl.LinePointLayer.ANIMATION_TYPE_SMOOTH,
+            shapeType: mapvgl.LinePointLayer.SHAPE_TYPE_CIRCLE,
+            blend: 'lighter'
+        });
+        view.addLayer(linePointLayer);
+        linePointLayer.setData(data);
+
+        var lineLayer = new mapvgl.SimpleLineLayer({
+            color: 'rgba(55, 55, 255, 0.11)'
+        });
+        view.addLayer(lineLayer);
+        lineLayer.setData(data);
+    });
+</script>
+
+<script>
+    $('.ui.dropdown')
+        .dropdown()
+    ;
+
+    $('.ui.accordion')
+        .accordion()
+    ;
+
+</script>
