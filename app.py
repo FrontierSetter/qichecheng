@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify
+import requests
 
 app = Flask(__name__)
 
@@ -108,6 +109,8 @@ def render_html(html_name):
     return render_template(html_name)
 
 
-@app.route('/json_3_1')
-def json_3_1_get():
-    return jsonify(json_3_1)
+@app.route('/json/car_list')
+def car_list_get():
+    response = requests.urlopen('http://10.55.8.52:8860/api/v1/vehicle/list')
+    print(response.json())
+    return jsonify(response.json())
