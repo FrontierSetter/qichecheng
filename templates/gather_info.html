@@ -76,24 +76,25 @@
     <div class="pusher" style="height: 100%; margin: 0" >
         <div class="my_chart_container" style="width: 100%;height: 100%; background: rgb(213, 221, 215); overflow: scroll;">
             <div style="height: 8%;width: 100%; float: left;">
+            <!-- 下拉框 -->
             <div class="ui floating labeled icon dropdown button" style="float: left;">
                 <i class="filter icon"></i>
-                <span class="text">天</span>
+                <span class="text">月</span>
                 <div class="menu">
                     <div class="header"><i class="tags icon"></i>时间单位</div>
-                    <div class="item" onclick= "(function(){
+                    <!-- <div class="item" onclick= "(function(){
                         document.getElementById('start_time').type='datetime-local';
                         document.getElementById('end_time').type='datetime-local';
-                    })()">分钟</div>
-                    <div class="item active selected" onclick= "(function(){
+                    })()">分钟</div> -->
+                    <div class="disabled item" onclick= "(function(){
                         document.getElementById('start_time').type='date';
                         document.getElementById('end_time').type='date';
                     })()">天</div>
-                    <div class="item" onclick= "(function(){
+                    <div class="disabled item" onclick= "(function(){
                         document.getElementById('start_time').type='week';
                         document.getElementById('end_time').type='week';
                     })()" >周</div>
-                    <div class="item" onclick= "(function(){
+                    <div class="item active selected" onclick= "(function(){
                         document.getElementById('start_time').type='month';
                         document.getElementById('end_time').type='month';
                     })()" >月</div>
@@ -103,13 +104,13 @@
 
 
             <!-- 时间选择 -->
-            <div class="ui input" style="margin-left: 5%; float: left;"><input id="start_time" type="date" value="2014-01-13"/></div>
+            <div class="ui input" style="margin-left: 5%; float: left;"><input id="start_time" type="month" value="2019-08"/></div>
 
-            <div class="ui input" style="margin-left: 5%; float: left;"><input id="end_time" type="date" value="2014-01-13"/></div>
+            <div class="ui input" style="margin-left: 5%; float: left;"><input id="end_time" type="month" value="2020-05"/></div>
             
-            <div class="ui input" style="margin-left: 5%;  float: left;"><input type="text" placeholder="车牌号"></div>
+            <!-- <div class="ui input" style="margin-left: 5%;  float: left;"><input type="text" placeholder="车牌号"></div> -->
 
-            <button class="ui blue button" style="margin-left: 5%;float: left;" onclick="myChart2_resize()">
+            <button class="ui blue button" style="margin-left: 5%;float: left;" onclick="requestTest()">
                 查询
             </button>
             </div>
@@ -127,7 +128,6 @@
                         <div id="pic_1_3" style="height: 48%; width: 42%; float: left;"></div>
                         <div id="pic_1_4" style="height: 48%; width: 7%; float: left;"></div>
                         <div id="pic_1_5" style="height: 48%; width: 49%; float: left;"></div>
-                        <div id="pic_1_6" style="height: 48%; width: 49%; float: left;"></div>
                         <div id="pic_1_6" style="height: 48%; width: 49%; float: left;"></div>
                     </div>
                 </div>
@@ -220,6 +220,7 @@
                     <div style="height: 500px;" >
                     <div id="pic_3_1" style="height: 100%; width: 100%; float: left; "></div>                    
                 </div>
+
             </div>
 
 
@@ -967,3 +968,23 @@
     }
 </script>
 
+
+<script type="text/javascript">
+    function requestTest(){
+        singleCarTraceInitFinish = false;
+        $.ajax({
+            url: 'http://10.55.8.52:8860/api/v1/vehicle/list', //请求的url
+            type: 'get', //请求的方式
+            error: function (data) {
+                console.log('requestSingleCarTrace请求失败');
+            },
+            success: function (data) {
+                console.log('请求到的历史轨迹长度: '+data.length);
+                console.log(data)
+                
+            }
+            
+        });
+
+    }
+</script>
