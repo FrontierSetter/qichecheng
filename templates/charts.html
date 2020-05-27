@@ -103,7 +103,7 @@
                 </select>
             </div>
 
-            <button class="ui blue button" style="margin-left: 5%;float: left;" onclick="setTimeSpan()">
+            <button class="ui blue button" style="margin-left: 5%;float: left;" id="search_button" onclick="setTimeSpan()">
                 查询
             </button>
             </div>
@@ -502,6 +502,8 @@
     var curVin;
 
     function setTimeSpan(){
+        $('#search_button').addClass('loading');
+
         spanType = document.getElementById('start_time').type;
         startTimeValue = document.getElementById('start_time').value;
         endTimeValue = document.getElementById('end_time').value;
@@ -537,6 +539,8 @@
             data:{'starttime':startTimeValue,'endtime':endTimeValue,'type':spanType,'vin':curVin},
             error: function (data) {
                 console.log('getCarInfo');
+                $('#search_button').removeClass('loading');
+
             },
             success: function (data) {
                 data = data['resultData'];
@@ -584,8 +588,8 @@
                 option1_4.series[0].data = [sum(autoDurationArr)];
                 option1_4.series[1].data = [sum(durationArr)];
                 myChart1_4.setOption(option1_4);
+                $('#search_button').removeClass('loading');
             }
-
         })  
     }
 </script>
