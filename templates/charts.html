@@ -30,7 +30,9 @@
     <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/accordion.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/components/accordion.js"></script>
     <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/components/button.css" rel="stylesheet">
-
+    <link href="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.4.1/components/dropdown.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
+    
     <!-- echarts -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
@@ -42,6 +44,7 @@
 
     <!-- 百度地图封装api -->
     <script src="static/common.js"></script>
+    <script src="static/function.js"></script>
 
     <link rel="stylesheet" type="text/css" href="static/component.css">
 
@@ -73,19 +76,15 @@
                 <span class="text">天</span>
                 <div class="menu">
                     <div class="header"><i class="tags icon"></i>时间单位</div>
-                    <div class="item" onclick= "(function(){
-                        document.getElementById('start_time').type='datetime-local';
-                        document.getElementById('end_time').type='datetime-local';
-                    })()">分钟</div>
                     <div class="item active selected" onclick= "(function(){
                         document.getElementById('start_time').type='date';
                         document.getElementById('end_time').type='date';
                     })()">天</div>
-                    <div class="item" onclick= "(function(){
+                    <div class="disabled item" onclick= "(function(){
                         document.getElementById('start_time').type='week';
                         document.getElementById('end_time').type='week';
                     })()" >周</div>
-                    <div class="item" onclick= "(function(){
+                    <div class="disabled item" onclick= "(function(){
                         document.getElementById('start_time').type='month';
                         document.getElementById('end_time').type='month';
                     })()" >月</div>
@@ -95,13 +94,16 @@
 
 
             <!-- 时间选择 -->
-            <div class="ui input" style="margin-left: 5%; float: left;"><input id="start_time" type="date" value="2014-01-13"/></div>
+            <div class="ui input" style="margin-left: 5%; float: left;"><input id="start_time" type="date" value="2020-01-01"/></div>
 
-            <div class="ui input" style="margin-left: 5%; float: left;"><input id="end_time" type="date" value="2014-01-13"/></div>
+            <div class="ui input" style="margin-left: 5%; float: left;"><input id="end_time" type="date" value="2020-05-20"/></div>
             
-            <div class="ui input" style="margin-left: 5%;  float: left;"><input type="text" placeholder="车牌号"></div>
+            <div style="margin-left: 5%;  float: left;">
+                <select class="ui search dropdown" id="car_vin_dropdown">
+                </select>
+            </div>
 
-            <button class="ui blue button" style="margin-left: 5%;float: left;">
+            <button class="ui blue button" style="margin-left: 5%;float: left;" onclick="setTimeSpan()">
                 查询
             </button>
             </div>
@@ -142,12 +144,65 @@
                 end: 100         // 右边在 60% 的位置。
             }
         ],
+        // xAxis: {
+        //     type: 'time',
+        //     axisLabel: {
+        //         formatter: function(value, index) {
+        //             return new Date(value).getFullYear();
+        //         }
+        //     },
+        // },
         xAxis: {
             type: 'category',
             data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+                formatter: function (value) {
+                    var res = value.toString();                                            
+                    var numN1 = 0; 
+                    var numN2 = 1;
+                    var num1=0;
+                    var num2=0;
+                    var t1 = 1;
+                    for(var k=0;k<res.length;k++){
+                        if(res[k]==".")
+                            t1 = 0;
+                        if(t1)
+                            num1++;
+                        else
+                            num2++;                                                                                              
+                    }
+                                                                    
+                    if(Math.abs(value)<1 && res.length>4)
+                    {
+                        for(var i=2; i<res.length; i++){                                              
+                            if(res[i]=="0"){
+                                numN2++;
+                            }else if(res[i]==".")
+                                continue;
+                            else
+                                break;
+                        }
+                        var v = parseFloat(value);                                                
+                        v = v * Math.pow(10,numN2);
+                        return v.toString() + "e-" + numN2;
+                    }else if(num1>4)
+                    {
+                        if(res[0]=="-")
+                            numN1 = num1 - 2;
+                        else
+                            numN1 = num1 - 1;
+                        var v = parseFloat(value);                                                
+                        v = v / Math.pow(10,numN1);
+                        if(num2 > 4)
+                            v = v.toFixed(4);
+                        return v.toString() + "e" + numN1;
+                    }else
+                        return parseFloat(value);                                                                                  
+                }
+            }
         },
         series: [
             {
@@ -167,19 +222,30 @@
     var myChart1_2 = echarts.init(document.getElementById('pic_1_2'));
     var option1_2 = {
         tooltip: {},
-        dataset: {
-            source: [
-                ['模式', '自动驾驶', '汇总'],
-                ['里程', 800, 8583],
-            ]
+        // dataset: {
+        //     source: [
+        //         ['模式', '自动驾驶', '汇总'],
+        //         ['里程', 800, 8583],
+        //     ]
+        // },
+        xAxis: {
+            type: 'category',
+            data: ['里程'],
         },
-        xAxis: {type: 'category'},
         yAxis: {show: false},
         // Declare several bar series, each will be mapped
         // to a column of dataset.source by default.
         series: [
-            {type: 'bar'},
-            {type: 'bar'},
+            {
+                name: '自动驾驶',
+                type: 'bar',
+                data: [800]
+            },
+            {
+                name: '汇总',
+                type: 'bar',
+                data: [8583]
+            }
         ]
     };
     myChart1_2.setOption(option1_2);
@@ -206,7 +272,52 @@
             data: ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLabel: {
+                formatter: function (value) {
+                    var res = value.toString();                                            
+                    var numN1 = 0; 
+                    var numN2 = 1;
+                    var num1=0;
+                    var num2=0;
+                    var t1 = 1;
+                    for(var k=0;k<res.length;k++){
+                        if(res[k]==".")
+                            t1 = 0;
+                        if(t1)
+                            num1++;
+                        else
+                            num2++;                                                                                              
+                    }
+                                                                    
+                    if(Math.abs(value)<1 && res.length>4)
+                    {
+                        for(var i=2; i<res.length; i++){                                              
+                            if(res[i]=="0"){
+                                numN2++;
+                            }else if(res[i]==".")
+                                continue;
+                            else
+                                break;
+                        }
+                        var v = parseFloat(value);                                                
+                        v = v * Math.pow(10,numN2);
+                        return v.toString() + "e-" + numN2;
+                    }else if(num1>4)
+                    {
+                        if(res[0]=="-")
+                            numN1 = num1 - 2;
+                        else
+                            numN1 = num1 - 1;
+                        var v = parseFloat(value);                                                
+                        v = v / Math.pow(10,numN1);
+                        if(num2 > 4)
+                            v = v.toFixed(4);
+                        return v.toString() + "e" + numN1;
+                    }else
+                        return parseFloat(value);                                                                                  
+                }
+            }
         },
         series: [
             {
@@ -226,19 +337,30 @@
     var myChart1_4 = echarts.init(document.getElementById('pic_1_4'));
     var option1_4 = {
         tooltip: {},
-        dataset: {
-            source: [
-                ['模式', '自动驾驶', '汇总'],
-                ['累计时长', 1420, 5523],
-            ]
+        // dataset: {
+        //     source: [
+        //         ['模式', '自动驾驶', '汇总'],
+        //         ['累计时长', 1420, 5523],
+        //     ]
+        // },
+        xAxis: {
+            type: 'category',
+            data: ['时长'],
         },
-        xAxis: {type: 'category'},
         yAxis: {show: false},
         // Declare several bar series, each will be mapped
         // to a column of dataset.source by default.
         series: [
-            {type: 'bar'},
-            {type: 'bar'},
+            {
+                name: '自动驾驶',
+                type: 'bar',
+                data: [800]
+            },
+            {
+                name: '汇总',
+                type: 'bar',
+                data: [8583]
+            }
         ]
     };
     myChart1_4.setOption(option1_4);
@@ -333,4 +455,137 @@
         .accordion()
     ;
 
+</script>
+
+<script>
+
+    function addNewCar(carVin){
+        var div = document.getElementById('car_vin_dropdown'); 
+        var input = document.createElement('option');  
+        input.setAttribute('value', carVin);  
+        input.innerHTML=carVin;  
+        div.appendChild(input);
+    }
+
+    function getCarList(){
+        $.ajax({
+            // url: 'http://27.115.34.163:3005/json/car_list', //请求的url
+            url: 'http://127.0.0.1:5600/json/car_list', //请求的url
+            type: 'get', //请求的方式
+            error: function (data) {
+                console.log('getCarList请求失败');
+            },
+            success: function (data) {
+                data = data['resultData'];
+                for(var i = 0; i < data.length; ++i){
+                    addNewCar(data[i]['vinno']);
+                }
+                // TODO: 这东西真的必要吗
+                $('#select')
+                    .dropdown()
+                ;
+            }
+        })      
+    }
+
+    getCarList();
+
+</script>
+
+<script type="text/javascript">
+    var startTimeValue;
+    var endTimeValue;
+    var startTimeYear, startTimeMonth, startTimeDay;
+    var endTimeYear, endTimeMonth, endTimeDay;
+    var spanType;
+
+    var curVin;
+
+    function setTimeSpan(){
+        spanType = document.getElementById('start_time').type;
+        startTimeValue = document.getElementById('start_time').value;
+        endTimeValue = document.getElementById('end_time').value;
+
+        startTimeYear = startTimeValue.split('-')[0];
+        endTimeYear = endTimeValue.split('-')[0];
+
+        if(spanType == 'month'){
+            startTimeMonth = startTimeValue.split('-')[1];
+            endTimeMonth = endTimeValue.split('-')[1];
+        }
+
+        if(spanType == 'day'){
+            startTimeMonth = startTimeValue.split('-')[1];
+            endTimeMonth = endTimeValue.split('-')[1];
+            startTimeDay = startTimeValue.split('-')[2];
+            endTimeDay = endTimeValue.split('-')[2];
+        }
+
+        curVin =$('#car_vin_dropdown').dropdown('get value');
+        // console.log(curVin);
+        // console.log(startTimeValue);
+        // console.log(endTimeValue);
+
+        getCarInfo();
+    }
+
+    function getCarInfo(){
+        $.ajax({
+            // url: 'http://27.115.34.163:3005/json/car_list', //请求的url
+            url: 'http://127.0.0.1:5600/json/statistic_history_vehicle', //请求的url
+            type: 'get', //请求的方式
+            data:{'startTime':startTimeValue,'endtime':endTimeValue,'type':spanType,'vin':curVin},
+            error: function (data) {
+                console.log('getCarInfo');
+            },
+            success: function (data) {
+                data = data['resultData'];
+                if(data.length == 0){
+                    alert('后台数据返回错误')
+                }
+
+                var timeArr = [];
+                var mileageArr = [];
+                var durationArr = [];
+                var autoMileageArr = [];
+                var autoDurationArr = [];
+
+                for(var i = 0; i < data.length; ++i){
+                    timeArr.push(data[i]['time'].split(' ')[0]);
+                    mileageArr.push(data[i]['mileage']);
+                    durationArr.push(data[i]['duration']);
+                    autoMileageArr.push(data[i]['autoMileage']);
+                    autoDurationArr.push(data[i]['autoDuration']);
+                }
+
+                var option1_1 = myChart1_1.getOption();
+                option1_1.series[0].data = autoMileageArr;
+                option1_1.series[1].data = mileageArr;
+                option1_1.xAxis[0].data = timeArr;
+                // option1_1.xAxis[0].type = 'time';
+                myChart1_1.setOption(option1_1);
+
+                var option1_3 = myChart1_3.getOption();
+                option1_3.series[0].data = autoDurationArr;
+                option1_3.series[1].data = durationArr;
+                option1_3.xAxis[0].data = timeArr;
+                // option1_1.xAxis[0].type = 'time';
+                myChart1_3.setOption(option1_3);
+
+                var totalMileage, totalAutoMileage;
+                var totalDuration, totalAutoDuration;
+
+                var option1_2 = myChart1_2.getOption();
+                option1_2.series[0].data = [sum(autoMileageArr)];
+                option1_2.series[1].data = [sum(mileageArr)];
+                myChart1_2.setOption(option1_2);
+
+                var option1_4 = myChart1_4.getOption();
+                option1_4.series[0].data = [sum(autoDurationArr)];
+                option1_4.series[1].data = [sum(durationArr)];
+                myChart1_4.setOption(option1_4);
+            }
+
+        })  
+    }
 </script>
