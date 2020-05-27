@@ -30,7 +30,6 @@ def vehicle_history_get():
         return jsonify(response.json())
 
 if __name__ == '__main__':
-    cnt = 0
     carListJson = requests.get('http://10.55.8.52:8860/api/v1/vehicle/list').json()
     carList = carListJson['resultData']
     for car in carList:
@@ -38,11 +37,6 @@ if __name__ == '__main__':
         print(curVin)
         carHistoryRespond = requests.get('http://10.55.8.52:8860/api/v1/vehicle/history', params={'starttime':'2019-08-13', 'endtime':'2020-05-20', 'vin':curVin})
         vehicleHistoryDict[curVin] = carHistoryRespond.json()
-
-        cnt += 1
-        if cnt > 3:
-            break
-        
 
 
     print('1')

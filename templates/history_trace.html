@@ -266,7 +266,7 @@
                 success: function (data) {
                     var coordinateArr = [];
                     data = data['resultData'];
-                    console.log(data);
+                    // console.log(data);
 
                     for(var i = 0; i < data.length; ++i){
                         coordinateArr.push([data[i]['longitude'], data[i]['latitude']]);
@@ -293,9 +293,9 @@
                 }
             })
         }
-        console.log(carList);
-        console.log(carGroInfo);
-        console.log(mapData);
+        // console.log(carList);
+        // console.log(carGroInfo);
+        // console.log(mapData);
 
         linePointLayer.setData(mapData);
         lineLayer.setData(mapData);
