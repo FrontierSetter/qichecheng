@@ -84,10 +84,10 @@
 
             <!-- 时间选择 -->
             <p>开始日期：</p>
-            <div class="ui input" style="margin-left: 3%; margin-bottom: 3%;"><input id="start_time" type="date" value="2014-01-13"/></div>
+            <div class="ui input" style="margin-left: 3%; margin-bottom: 3%;"><input id="start_time" type="date" value="2020-01-01"/></div>
             <br />
             <p>结束日期：</p>
-            <div class="ui input" style="margin-left: 3%; margin-bottom: 3%;"><input id="end_time" type="date" value="2014-01-13"/></div>
+            <div class="ui input" style="margin-left: 3%; margin-bottom: 3%;"><input id="end_time" type="date" value="2020-05-20"/></div>
 
             <div class="ui divider"></div>
 
@@ -226,11 +226,12 @@
 
 <script>
     var carList = [];       // 保存车辆名单信息
-    var carGroInfo = {};    // 保存车辆地理位置信息，以vin做索引
+    var carGroInfo = new Array();    // 保存车辆地理位置信息，以vin做索引
     var curNum = 0;         //递归处理中当前在第几辆车
     var mapData = [];
 
     function getCarList(){
+        console.log('getCarList in');
         $.ajax({
             url: './json/car_list', //请求的url
             type: 'get', //请求的方式
@@ -242,40 +243,48 @@
                 for(var i = 0; i < data.length; ++i){
                     carList.push(data[i]);
                 }
+                getGeoInfo();
             }
         })      
     }
 
     
     function getGeoInfo(){
-        if(curNum >= carList.length) return;
+        console.log('getGeoInfo in');
+        if(curNum >= carList.length){
+            createMapData();
+            return;
+            
+        }else{
+            $.ajax({
+                url: './json/vehicle_history', //请求的url
+                type: 'get', //请求的方式
+                data:{'starttime':startTimeValue,'endtime':endTimeValue,'vin':carList[curNum]['vinno']},
+                error: function (data) {
+                    console.log('getCarList请求失败');
+                },
+                success: function (data) {
+                    var coordinateArr = [];
+                    data = data['resultData'];
+                    console.log(data);
 
-        $.ajax({
-            url: './json/vehicle_history', //请求的url
-            type: 'get', //请求的方式
-            data:{'starttime':startTimeValue,'endtime':endTimeValue,'vin':carList[curNum]['vinno']},
-            error: function (data) {
-                console.log('getCarList请求失败');
-            },
-            success: function (data) {
-                var coordinateArr = [];
-                data = data['resultData'];
+                    for(var i = 0; i < data.length; ++i){
+                        coordinateArr.push([data[i]['longitude'], data[i]['latitude']]);
+                    }
 
-                for(var i = 0; i < data.length; ++i){
-                    coordinateArr.push([data[i]['longitude'], data[i]['latitude']]);
+                    carGroInfo[carList[curNum]['vinno']] = coordinateArr;
+
+                    curNum += 1;
+
+                    getGeoInfo();
                 }
-
-                carGroInfo[carList[curNum]['vinno']] = coordinateArr;
-
-                curNum += 1;
-
-                getGeoInfo();
-            }
-        }) 
+            }) 
+        }
     }
 
 
     function createMapData(){
+        console.log('createMapData in');
         for(var vin in carGroInfo){
             mapData.push({
                 geometry:{
@@ -284,15 +293,18 @@
                 }
             })
         }
+        console.log(carList);
+        console.log(carGroInfo);
+        console.log(mapData);
+
+        linePointLayer.setData(mapData);
+        lineLayer.setData(mapData);
     }
 
-    getCarList();
-    getGeoInfo();
-    createMapData();
-
-    console.log(carList);
-    console.log(carGroInfo);
-    console.log(mapData);
+    function initialMapData(){
+        setTimeSpan();
+        getCarList();
+    }
 
 
 </script>
@@ -343,8 +355,8 @@
     //     lineLayer.setData(data);
     // });
 
-    var data = mapData;
-    console.log(data);
+    // var data = mapData;
+    // console.log(data);
 
     var linePointLayer = new mapvgl.LinePointLayer({
         size: 5,
@@ -355,11 +367,13 @@
         blend: 'lighter'
     });
     view.addLayer(linePointLayer);
-    linePointLayer.setData(data);
+    // linePointLayer.setData(data);
 
     var lineLayer = new mapvgl.SimpleLineLayer({
         color: 'rgba(55, 55, 255, 0.11)'
     });
     view.addLayer(lineLayer);
-    lineLayer.setData(data);
+    // lineLayer.setData(data);
+
+    initialMapData();
 </script>

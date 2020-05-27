@@ -17,6 +17,8 @@ else:
     routeEnv = 'http://127.0.0.1:5000/json'
     print("debug env")
 
+cacheEnv = 'http://127.0.0.1:5001/json'
+
 @app.route('/')
 def default():
     return render_template("realtime_map.html")
@@ -60,7 +62,8 @@ def vehicle_history_get():
     starttime = request.args.get("starttime")
     endtime = request.args.get("endtime")
     vin = request.args.get("vin")
-    response = requests.get(routeEnv+'/vehicle/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
+    # 访问缓存服务器
+    response = requests.get(cacheEnv+'/vehicle/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
     # print(response.json())
     return jsonify(response.json())
 
