@@ -1115,7 +1115,7 @@
                 name: '脱手率',
                 type: 'bar',
                 barWidth: '60%',
-                data: [0.22, 0.330, 0.390]
+                data: [0.22, 0.830, 0.390]
             }
         ]
     };
@@ -1159,6 +1159,7 @@
         // console.log(startTimeValue);
         // console.log(endTimeValue);
         requestHistoryAll();
+        requestExitRate();
     }
     
 
@@ -1239,4 +1240,33 @@
 
     }
     
+    function requestExitRate(){
+        $.ajax({
+            // url: 'http://27.115.34.163:3005/json/car_list', //请求的url
+            url: './json/statistic_history_exit', //请求的url
+            type: 'get', //请求的方式
+            error: function (data) {
+                console.log('requestExitRate');
+            },
+            success: function (data) {
+                // console.log(data);
+
+                data = data['resultData'];
+
+                var enterName = [];
+                var exitRate = [];
+
+                for(var i = 0; i < data.length; ++i){
+                    enterName.push(data[i]['id']);
+                    exitRate.push(data[i]['exitRate']);
+                }
+
+                var option3_1 = myChart3_1.getOption();
+                option3_1.series[0].data = exitRate.reverse();
+                option3_1.yAxis[0].data = enterName.reverse();
+                myChart3_1.setOption(option3_1);
+            }
+        })
+    }
+
 </script>
