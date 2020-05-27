@@ -34,13 +34,13 @@ def render_favicon():
 def car_list_get():
     print(routeEnv+'/vehicle/list')
     response = requests.get(routeEnv+'/vehicle/list')
-    print(response.json())
+    # print(response.json())
     return jsonify(response.json())
 
 @app.route('/json/statistic_history_exit')
 def history_exit_get():
     response = requests.get(routeEnv+'/statistic/history/exit')
-    print(response.json())
+    # print(response.json())
     return jsonify(response.json())
 
 
@@ -49,8 +49,10 @@ def statistic_history_get():
     starttime = request.args.get("starttime")
     endtime = request.args.get("endtime")
     spanType = request.args.get("type")
+    if spanType == 'date':
+        spanType = 'day'
     response = requests.get(routeEnv+'/statistic/history', params={'starttime':starttime,'endtime':endtime,'type':spanType})
-    print(response.json())
+    # print(response.json())
     return jsonify(response.json())
 
 @app.route('/json/statistic_history_vehicle')
@@ -58,7 +60,9 @@ def statistic_history_vehicle_get():
     starttime = request.args.get("starttime")
     endtime = request.args.get("endtime")
     spanType = request.args.get("type")
+    if spanType == 'date':
+        spanType = 'day'
     vin = request.args.get("vin")
     response = requests.get(routeEnv+'/statistic/history/vehicle', params={'starttime':starttime,'endtime':endtime,'type':spanType,'vin':vin})
-    print(response.json())
+    # print(response.json())
     return jsonify(response.json())
