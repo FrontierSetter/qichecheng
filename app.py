@@ -32,7 +32,7 @@ def render_favicon():
 
 @app.route('/json/car_list')
 def car_list_get():
-    print(routeEnv+'/vehicle/list')
+    # print(routeEnv+'/vehicle/list')
     response = requests.get(routeEnv+'/vehicle/list')
     # print(response.json())
     return jsonify(response.json())
@@ -52,6 +52,15 @@ def statistic_history_get():
     if spanType == 'date':
         spanType = 'day'
     response = requests.get(routeEnv+'/statistic/history', params={'starttime':starttime,'endtime':endtime,'type':spanType})
+    # print(response.json())
+    return jsonify(response.json())
+
+@app.route('/json/vehicle_history')
+def vehicle_history_get():
+    starttime = request.args.get("starttime")
+    endtime = request.args.get("endtime")
+    vin = request.args.get("vin")
+    response = requests.get(routeEnv+'/vehicle/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
     # print(response.json())
     return jsonify(response.json())
 
