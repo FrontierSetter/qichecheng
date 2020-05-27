@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 # app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-serverEnv = ('Windows' not in os.environ.get('OS'))
+serverEnv = ((os.environ.get('OS') != None) and ('Windows' not in os.environ.get('OS')))
 
 if serverEnv:
     routeEnv = 'http://10.55.8.52:8860/api/v1'
