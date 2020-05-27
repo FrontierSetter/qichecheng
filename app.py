@@ -4,7 +4,6 @@ import requests
 # 5500
 
 app = Flask(__name__)
-app.config['DEBUG'] = True
 # app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @app.route('/')
@@ -26,23 +25,23 @@ def car_list_get():
 @app.route('/json/statistic_history')
 def statistic_history_get():
     # response = requests.get('http://10.55.8.52:8860/api/v1/vehicle/list')
-    startTime = request.args.get("startTime")
+    starttime = request.args.get("starttime")
     endtime = request.args.get("endtime")
     spanType = request.args.get("type")
-    response = requests.get('http://10.55.8.52:8860/api/v1/statistic/history', params={'startTime':startTime,'endtime':endtime,'type':spanType})
+    response = requests.get('http://10.55.8.52:8860/api/v1/statistic/history', params={'starttime':starttime,'endtime':endtime,'type':spanType})
     print(response.json())
     return jsonify(response.json())
 
 @app.route('/json/statistic_history_vehicle')
 def statistic_history_vehicle_get():
     # response = requests.get('http://10.55.8.52:8860/api/v1/vehicle/list')
-    startTime = request.args.get("startTime")
+    starttime = request.args.get("starttime")
     endtime = request.args.get("endtime")
     spanType = request.args.get("type")
     vin = request.args.get("vin")
     # print(startTime+endtime+spanType+vin)
     # print(request.args)
 
-    response = requests.get('http://10.55.8.52:8860/api/v1/statistic/history/vehicle', params={'startTime':startTime,'endtime':endtime,'type':spanType,'vin':vin})
+    response = requests.get('http://10.55.8.52:8860/api/v1/statistic/history/vehicle', params={'starttime':starttime,'endtime':endtime,'type':spanType,'vin':vin})
     print(response.json())
     return jsonify(response.json())
