@@ -470,7 +470,7 @@
     function getCarList(){
         $.ajax({
             // url: 'http://27.115.34.163:3005/json/car_list', //请求的url
-            url: 'http://27.115.34.163:3005/json/car_list', //请求的url
+            url: './json/car_list', //请求的url
             type: 'get', //请求的方式
             error: function (data) {
                 console.log('getCarList请求失败');
@@ -534,7 +534,7 @@
     function getCarInfo(){
         $.ajax({
             // url: 'http://27.115.34.163:3005/json/car_list', //请求的url
-            url: 'http://27.115.34.163:3005/json/statistic_history_vehicle', //请求的url
+            url: './json/statistic_history_vehicle', //请求的url
             type: 'get', //请求的方式
             data:{'starttime':startTimeValue,'endtime':endTimeValue,'type':spanType,'vin':curVin},
             error: function (data) {
