@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 import requests
 import os
-import time
+import time, datetime
 
 
 app = Flask(__name__)
@@ -49,11 +49,12 @@ def refreshVehicleInfo(starttime, endtime, carVin):
 
     for curLog in vehicleHistoryDict[carVin]["resultData"]:
         curLocation = getBaiduLocation(curLog["longitude"], curLog["latitude"])
-        curTime = curLog["positionTime"]
+        # logTime = curLog["positionTime"]
+        logTime = time.mktime(datetime.datetime.strptime(curLog["positionTime"],'%Y-%m-%d %H:%M:%S').timetuple())
         vehicleHistoryLocationDict[carVin]["requestData"].append({
             "latitude":curLocation[1],
             "longitude":curLocation[0],
-            "positionTime":curTime
+            "positionTime":logTime
         })
 
 
