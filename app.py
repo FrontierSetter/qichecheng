@@ -62,9 +62,23 @@ def vehicle_history_get():
     starttime = request.args.get("starttime")
     endtime = request.args.get("endtime")
     vin = request.args.get("vin")
-    # 访问缓存服务器
-    response = requests.get(cacheEnv+'/vehicle/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
+    try:
+        # 访问缓存服务器
+        response = requests.get(cacheEnv+'/vehicle/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
+    except:
+        print('cache server wrong')
+        response = requests.get(routeEnv+'/vehicle/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
     # print(response.json())
+    return jsonify(response.json())
+
+# 从缓存服务器请求已经经过预处理的车辆历史轨迹信息
+@app.route('/json/vehicle_location_history')
+def vehicle_location_history_get():
+    starttime = request.args.get("starttime")
+    endtime = request.args.get("endtime")
+    vin = request.args.get("vin")
+
+    response = requests.get(cacheEnv+'/vehicle/location/history', params={'starttime':starttime,'endtime':endtime,'vin':vin})
     return jsonify(response.json())
 
 @app.route('/json/statistic_history_vehicle')
