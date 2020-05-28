@@ -110,40 +110,15 @@ if __name__ == '__main__':
     carListJson = requests.get('http://10.55.8.52:8860/api/v1/vehicle/list').json()
     carList = carListJson['resultData']
 
-    carNum = int(input("carNum:"))
+    # carNum = int(input("carNum:"))
     
     print("constructVehicleInfo:")
     for car in carList:
         print(car['vinno'])
         refreshVehicleInfo('2019-08-13', '2020-05-20', car['vinno'])
-        carNum -= 1
-        if carNum <= 0:
-            break
-
-    # print("requestVehicleHistory:")
-    # for car in carList:
-    #     curVin = car['vinno']
-    #     print(curVin)
-    #     carHistoryRespondJson = requests.get('http://10.55.8.52:8860/api/v1/vehicle/history', params={'starttime':'2019-08-13', 'endtime':'2020-05-20', 'vin':curVin}).json()
-    #     vehicleHistoryDict[curVin] = carHistoryRespondJson
-
-    # print("requestVehicleLocationHistory:")
-    # for carVin in vehicleHistoryDict:
-    #     print(carVin)
-    #     vehicleHistoryLocationDict[carVin] = {
-    #         "msg": "",
-    #         "code": 200,
-    #         "requestData":[]
-    #     }
-
-    #     for curLog in vehicleHistoryDict[curVin]["resultData"]:
-    #         curLocation = getBaiduLocation(curLog["longitude"], curLog["latitude"])
-    #         curTime = curLog["positionTime"]
-    #         vehicleHistoryLocationDict[carVin]["requestData"].append({
-    #             "latitude":curLocation[1],
-    #             "longitude":curLocation[0],
-    #             "positionTime":curTime
-    #         })
+        # carNum -= 1
+        # if carNum <= 0:
+        #     break
 
 
     print('1')
