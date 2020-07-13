@@ -14,7 +14,8 @@
     <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.55/dist/mapvgl.min.js"></script>
 
     <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <!-- semantic UI -->
     <script src="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.js"></script>
@@ -276,6 +277,8 @@
 
                     carGeoInfo[carList[curNum]['vinno']] = coordinateArr;
 
+                    // addMapData(carList[curNum]['vinno']);
+
                     curNum += 1;
 
                     getGeoInfo();
@@ -284,21 +287,34 @@
         }
     }
 
+    function addMapData(carVin){
+        console.log('addMapData in');
+        for(loc in carGeoInfo[carVin])
+        console.log(loc);
+            mapData.push({
+                geometry:{
+                    type:'Point',
+                    coordinates:loc
+                }
+            })
+
+        honeycombLayer.setData(mapData);
+    }
+
 
     function createMapData(){
         console.log('createMapData in');
         for(var vin in carGeoInfo){
+            console.log(carGeoInfo[vin])
             for(loc in carGeoInfo[vin])
+                // console.log(loc);
                 mapData.push({
                     geometry:{
                         type:'Point',
-                        coordinates:loc
+                        coordinates:carGeoInfo[vin][loc]
                     }
                 })
         }
-        // console.log(carList);
-        // console.log(carGeoInfo);
-        // console.log(mapData);
 
         honeycombLayer.setData(mapData);
     }
@@ -323,22 +339,12 @@
 
     var map = initMap({
         tilt: 10,
-        center: [116.395645,39.929986],
-        zoom: 9
+        center: [114.875568,30.558297],
+        zoom: 5
     });
     var data = [];
 
-    var randomCount = 10000;
-    var cityCenter = mapv.utilCityCenter.getCenterByCityName('北京');
-    // 构造数据
-    while (randomCount--) {
-        data.push({
-            geometry: {
-                type: 'Point',
-                coordinates: [cityCenter.lng - 0.2  + Math.random() * 0.5, cityCenter.lat - 0.2 + Math.random() * 0.5]
-            }
-        });
-    }
+
     var view = new mapvgl.View({
         map: map
     });
@@ -365,9 +371,9 @@
         height: 100, // 最大值的像素高度，为0时显示平面
         //enableCluster: true, // 开启点聚合，建议数据量较大时打开，会提前根据地图级别将距离较近的点进行聚合
         opacity: 0.1, // 透明度
-        maxZoom: 16, // 图层刷新最大地图级别，高于此值不再更新图层
+        maxZoom: 25, // 图层刷新最大地图级别，高于此值不再更新图层
         minZoom: 8, // 图层刷新最小地图级别，低于此值不再更新图层
-        size: 50 // 蜂窝图像素宽度
+        size: 25 // 蜂窝图像素宽度
     });
     view.addLayer(honeycombLayer);
     // honeycombLayer.setData(data);
