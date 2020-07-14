@@ -116,7 +116,7 @@ if __name__ == '__main__':
     print("constructVehicleInfo:")
     for car in carList:
         print(car['vinno'])
-        refreshVehicleInfo('2019-08-13', '2020-05-20', car['vinno'])
+        refreshVehicleInfo('2020-01-01', '2020-07-13', car['vinno'])
         # carNum -= 1
         # if carNum <= 0:
         #     break
